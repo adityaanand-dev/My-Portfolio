@@ -44,4 +44,51 @@ def load_portfolio():
 
 
 st.set_page_config(page_title="Aditya Anand | SDE & Cloud/DevOps Engineer", layout="wide")
-components.html(load_portfolio(), height=12000, scrolling=True)
+
+# Hide Streamlit chrome (header, footer, padding) so the portfolio fills the full viewport
+st.markdown(
+    """
+    <style>
+        /* Hide Streamlit header, footer, and main menu */
+        header[data-testid="stHeader"] { display: none !important; }
+        footer { display: none !important; }
+        #MainMenu { display: none !important; }
+
+        /* Remove all padding/margin around the app so iframe sits flush at top */
+        .stApp { margin: 0 !important; padding: 0 !important; }
+        .block-container {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin: 0 !important;
+            max-width: 100% !important;
+        }
+        section[data-testid="stMain"] { padding: 0 !important; }
+        div[data-testid="stVerticalBlock"] { gap: 0 !important; }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Scroll the parent Streamlit page to the very top on every load
+st.markdown(
+    "<script>window.scrollTo(0, 0); window.parent.scrollTo(0, 0);</script>",
+    unsafe_allow_html=True,
+)
+
+# Load the portfolio HTML and inject a scroll-to-top on iframe load as well
+portfolio_html = load_portfolio()
+
+# Inject a scroll-to-top snippet just before </body> inside the iframe
+scroll_script = (
+    "<script>"
+    "window.addEventListener('load', function() {"
+    "  window.scrollTo(0, 0);"
+    "  try { window.parent.scrollTo(0, 0); } catch(e) {}"
+    "});"
+    "</script>"
+)
+portfolio_html = portfolio_html.replace("</body>", scroll_script + "</body>")
+
+components.html(portfolio_html, height=12000, scrolling=True)
