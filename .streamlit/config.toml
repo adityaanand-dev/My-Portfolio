@@ -1,0 +1,13 @@
+[server]
+headless = true
+enableCORS = false
+
+[theme]
+base = "dark"
+
+[browser]
+gatherUsageStats = false
+
+[client]
+showErrorDetails = false
+toolbarMode = "minimal"
